@@ -1,0 +1,168 @@
+<!DOCTYPE html> 
+<html>
+<head>
+  <title>Jogo de Clique</title>
+
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      height: 100vh;
+      background-color: #111;
+      color: white;
+      font-family: Arial;
+    }
+
+    .game {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 50px;
+      margin-bottom: 40px;
+    }
+
+    button.main {
+      font-size: 30px;
+      padding: 20px 40px;
+      border: none;
+      border-radius: 10px;
+      background-color: #00ff88;
+      cursor: pointer;
+    }
+
+    button.main:active {
+      transform: scale(0.9);
+    }
+
+    .shop {
+      width: 250px;
+      background: #222;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .shop button {
+      padding: 15px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #444;
+      color: white;
+    }
+
+    .shop button:hover {
+      background: #666;
+    }
+
+    .efeito {
+      position: absolute;
+      color: #00ff88;
+      font-size: 30px;
+      pointer-events: none;
+      animation: subir 1s forwards;
+    }
+
+    @keyframes subir {
+      0% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-100px); }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="game">
+    <h1>Pontos: <span id="pontos">0</span></h1>
+    <button class="main" onclick="clicar(event)">CLIQUE AQUI</button>
+  </div>
+
+  <div class="shop">
+    <h2>Upgrades</h2>
+
+    <button onclick="comprar(30, 2)">+2 (30)</button>
+    <button onclick="comprar(200, 5)">+5 (200)</button>
+    <button onclick="comprar(1000, 10)">+10 (1000)</button>
+
+    <button onclick="comprar(1300, 20)">+20 (1300)</button>
+    <button onclick="comprar(1400, 30)">+30 (1400)</button>
+    <button onclick="comprar(1800, 40)">+40 (1800)</button>
+    <button onclick="comprar(2000, 50)">+50 (2000)</button>
+
+    <button onclick="renascer()">RENASCER</button>
+  </div>
+
+  <script>
+    let pontos = 0;
+    let valorClique = 1;
+    let multiplicador = 1;
+    let renascido = false;
+
+    function clicar(e) {
+      pontos += valorClique * multiplicador;
+      document.getElementById("pontos").innerText = pontos;
+
+      let efeito = document.createElement("div");
+      efeito.innerText = "+" + (valorClique * multiplicador);
+      efeito.className = "efeito";
+
+      efeito.style.left = e.clientX + "px";
+      efeito.style.top = e.clientY + "px";
+
+      document.body.appendChild(efeito);
+
+      setTimeout(() => efeito.remove(), 1000);
+    }
+
+    function comprar(custo, novoValor) {
+      if (pontos >= custo) {
+        pontos -= custo;
+
+        valorClique = novoValor;
+
+        document.getElementById("pontos").innerText = pontos;
+
+        if (novoValor === 50 && !renascido) {
+          setTimeout(() => {
+            alert("Parabéns! Você juntou pontos o suficiente para renascer!");
+          }, 100);
+        }
+
+        if (novoValor === 50 && renascido) {
+          setTimeout(() => {
+            alert("Obrigado por jogar o jogo!");
+          }, 100);
+        }
+
+      } else {
+        alert("Você precisa de mais pontos!");
+      }
+    }
+
+    function renascer() {
+      if (pontos >= 2000 && !renascido) {
+        pontos = 0;
+        multiplicador = 2;
+        valorClique = 1;
+        renascido = true;
+
+        document.getElementById("pontos").innerText = pontos;
+
+        alert("Parabéns! Você renasceu! Agora tudo vale o DOBRO 🔥");
+      } else if (renascido) {
+        alert("Você já renasceu!");
+      } else {
+        alert("Você precisa de 2000 pontos!");
+      }
+    }
+  </script>
+
+</body>
+</html>
